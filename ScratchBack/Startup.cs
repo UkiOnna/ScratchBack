@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Service.Services.Repositories;
 
 namespace ScratchBack
 {
@@ -30,6 +31,7 @@ namespace ScratchBack
             services.AddControllers();
             var configurationSection = Configuration.GetSection("ConnectionStrings:DefaultConnection");
             services.AddDbContext<ScratchContext>(options => options.UseSqlServer(configurationSection.Value));
+            services.AddScoped<RepositoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
