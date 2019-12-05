@@ -11,7 +11,7 @@ namespace Domain.Entities
         public DateTime DeadLine { get; set; }
         public int CreatorId { get; set; }
         public User Creator { get; set; }
-        public int ExecutorId { get; set; }
+        public int? ExecutorId { get; set; }
         public User Executor { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; }

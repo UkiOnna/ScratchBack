@@ -11,6 +11,7 @@ namespace Domain.Data
         public ScratchContext(DbContextOptions<ScratchContext> options) : base(options)
         {
         }
+
         public DbSet<Department> Department { get; set; }
         public DbSet<Interval> Interval { get; set; }
         public DbSet<Project> Project { get; set; }
