@@ -40,6 +40,12 @@ namespace ScratchBack
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(p =>
+                {
+                    p.AllowAnyOrigin();
+                    p.AllowAnyMethod();
+                    p.AllowAnyHeader();
+                });
             }
 
             app.UseHttpsRedirection();
