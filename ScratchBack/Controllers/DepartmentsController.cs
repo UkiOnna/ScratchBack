@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Data;
 using Domain.Entities;
+using Models.Dtos;
 
 namespace ScratchBack.Controllers
 {
@@ -23,14 +24,19 @@ namespace ScratchBack.Controllers
 
         // GET: api/Departments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartment()
+        public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartment()
         {
-            return await _context.Department.ToListAsync();
+            List<DepartmentDto> departmentDtos = new List<DepartmentDto>();
+            foreach (var department in _context.Department)
+            {
+                departmentDtos.Add(new DepartmentDto { Name = department.Name, SubdivisionId = department.SubdivisionId, Id = department.Id });
+            }
+            return departmentDtos.ToArray();
         }
 
         // GET: api/Departments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public async Task<ActionResult<DepartmentDto>> GetDepartment(int id)
         {
             var department = await _context.Department.FindAsync(id);
 
@@ -38,8 +44,9 @@ namespace ScratchBack.Controllers
             {
                 return NotFound();
             }
+            DepartmentDto _department = new DepartmentDto() { Name = department.Name, SubdivisionId = department.SubdivisionId, Id = department.Id };
 
-            return department;
+            return _department;
         }
 
         // PUT: api/Departments/5
@@ -78,12 +85,13 @@ namespace ScratchBack.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public async Task<ActionResult<Department>> PostDepartment(DepartmentDto department)
         {
-            _context.Department.Add(department);
+            Department _department = new Department() { Name = department.Name, SubdivisionId = department.SubdivisionId };
+            _context.Department.Add(_department);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
+            return CreatedAtAction("GetDepartment", new { id = _department.Id }, _department);
         }
 
         // DELETE: api/Departments/5
@@ -105,6 +113,18 @@ namespace ScratchBack.Controllers
         private bool DepartmentExists(int id)
         {
             return _context.Department.Any(e => e.Id == id);
+        }
+
+        [HttpGet("subdivision-departments/{id}")]
+        public async Task<ActionResult<Department>> GetSubdivisionDepartments(int id)
+        {
+            List<DepartmentDto> departmentDtos = new List<DepartmentDto>();
+            var _departments = _context.Department.Where(s => s.SubdivisionId == id);
+            foreach (var department in _departments)
+            {
+                departmentDtos.Add(new DepartmentDto { Name = department.Name, SubdivisionId = department.SubdivisionId, Id = department.Id });
+            }
+            return Ok(departmentDtos.ToArray());
         }
     }
 }
