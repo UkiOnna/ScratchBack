@@ -10,7 +10,11 @@ namespace Domain.Entities
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public int RoleId { get; set; }
-        public int DepartmentId { get; set; }
-        public string Login { get; set; }
+        public Role Role { get; set; }
+        public int? DepartmentId { get; set; }
+        public Department Department { get; set; }
+        public string Username { get; set; }
+        public string Token { get; set; }
+        public string Password { get; set; }
     }
 }
