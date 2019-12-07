@@ -19,6 +19,14 @@ namespace ScratchBack.Controllers
         public RolesController(ScratchContext context)
         {
             _context = context;
+            if (!_context.Role.Any())
+            {
+                _context.Role.Add(new Role { Name = "Worker" });
+                _context.Role.Add(new Role { Name = "Department" });
+                _context.Role.Add(new Role { Name = "Subdivision" });
+                _context.Role.Add(new Role { Name = "Admin" });
+                _context.SaveChanges();
+            }
         }
 
         // GET: api/Roles

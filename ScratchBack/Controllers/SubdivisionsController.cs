@@ -19,6 +19,11 @@ namespace ScratchBack.Controllers
         public SubdivisionsController(ScratchContext context)
         {
             _context = context;
+            if (!_context.Subdivision.Any())
+            {
+                _context.Subdivision.Add(new Subdivision { Name = "FAFA" });
+                _context.SaveChanges();
+            }
         }
 
         // GET: api/Subdivisions
@@ -82,7 +87,6 @@ namespace ScratchBack.Controllers
         {
             _context.Subdivision.Add(subdivision);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetSubdivision", new { id = subdivision.Id }, subdivision);
         }
 
