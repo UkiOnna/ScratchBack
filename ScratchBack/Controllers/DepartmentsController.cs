@@ -20,10 +20,11 @@ namespace ScratchBack.Controllers
         public DepartmentsController(ScratchContext context)
         {
             _context = context;
-            if (_context.Department.Any())
+            if (!_context.Department.Any())
             {
                 _context.Department.Add(new Department { Name = "Департамент #1", SubdivisionId = 1 });
                 _context.Department.Add(new Department { Name = "Департамент #2", SubdivisionId = 1 });
+                _context.SaveChanges();
             }
         }
 

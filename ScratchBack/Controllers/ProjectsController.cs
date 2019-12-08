@@ -19,9 +19,10 @@ namespace ScratchBack.Controllers
         public ProjectsController(ScratchContext context)
         {
             _context = context;
-            if (_context.Project.Any())
+            if (!_context.Project.Any())
             {
                 _context.Project.Add(new Project { DepartamentId = 1, Title = "Важный проект" });
+                _context.SaveChanges();
             }
         }
 
