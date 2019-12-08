@@ -20,6 +20,12 @@ namespace ScratchBack.Controllers
         public AuthController(ScratchContext context)
         {
             _context = context;
+            if (_context.User.Any())
+            {
+                _context.User.Add(new User { FirstName = "root", MiddleName = "root", LastName = "root", DepartmentId = 1, RoleId = 4, Username = "root", Password = "root" });
+                _context.User.Add(new User { FirstName = "Игорь", MiddleName = "Иванович", LastName = "Тактаков", DepartmentId = 1, RoleId = 1, Username = "tak", Password = "tak" });
+                _context.User.Add(new User { FirstName = "Монет", MiddleName = "Монетович", LastName = "Монетов", DepartmentId = 2, RoleId = 2, Username = "monet", Password = "monet" });
+            }
         }
 
         // GET: api/Auth
