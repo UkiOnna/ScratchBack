@@ -115,20 +115,31 @@ namespace ScratchBack.Controllers
         }
 
         [HttpPost("sign-in")]
-        public async Task<ActionResult<User>> SignIn(User user)
+        public IActionResult SignIn(UserLoginDto userDto)
         {
-            Guid g = Guid.NewGuid();
-            string token = Convert.ToBase64String(g.ToByteArray());
-            token = token.Replace("=", "");
-            token = token.Replace("+", "");
-            if (_context.User.All(u => u.Password == user.Password && u.Username == user.Username))
+            if (userDto == null)
             {
-                User _user = _context.User.FirstOrDefault(us => us.Username == user.Username);
-                _user.Token = token;
-                await _context.SaveChangesAsync();
+                return BadRequest();
+            }
+
+            var user = new User { Username = userDto.Username, Password = userDto.Password };
+
+            Guid g = Guid.NewGuid();
+            string token = g.ToString();
+            //string token = Convert.ToBase64String(g.ToByteArray());
+            //token = token.Replace("=", "");
+            //token = token.Replace("+", "");
+
+            var resultUser = _context.User.FirstOrDefault(u => u.Username == user.Username && u.Password == user.Password);
+            if (resultUser != null)
+            {
+                resultUser.Token = token;
+                _context.SaveChanges();
+
                 return Ok(token);
             }
-            return Ok(null);
+
+            return BadRequest();
         }
 
         [HttpGet("token/{id:guid}")]
@@ -152,26 +163,22 @@ namespace ScratchBack.Controllers
                 _context.Role.Add(new Role { Name = "Department" });
                 _context.Role.Add(new Role { Name = "Subdivision" });
                 _context.Role.Add(new Role { Name = "Admin" });
-                _context.SaveChanges();
             }
 
             if (!_context.Subdivision.Any())
             {
                 _context.Subdivision.Add(new Subdivision { Name = "FAFA" });
-                _context.SaveChanges();
             }
 
             if (!_context.Department.Any())
             {
                 _context.Department.Add(new Department { Name = "Департамент #1", SubdivisionId = 1 });
                 _context.Department.Add(new Department { Name = "Департамент #2", SubdivisionId = 1 });
-                _context.SaveChanges();
             }
 
             if (!_context.Project.Any())
             {
                 _context.Project.Add(new Project { DepartamentId = 1, Title = "Важный проект" });
-                _context.SaveChanges();
             }
 
             if (!_context.User.Any())
@@ -179,14 +186,14 @@ namespace ScratchBack.Controllers
                 _context.User.Add(new User { FirstName = "root", MiddleName = "root", LastName = "root", DepartmentId = 1, RoleId = 4, Username = "root", Password = "root" });
                 _context.User.Add(new User { FirstName = "Игорь", MiddleName = "Иванович", LastName = "Тактаков", DepartmentId = 1, RoleId = 1, Username = "tak", Password = "tak" });
                 _context.User.Add(new User { FirstName = "Монет", MiddleName = "Монетович", LastName = "Монетов", DepartmentId = 2, RoleId = 2, Username = "monet", Password = "monet" });
-                _context.SaveChanges();
             }
 
             if (!_context.Task.Any())
             {
                 _context.Task.Add(new Domain.Entities.Task { CreatorId = 1, ProjectId = 1, DeadLine = DateTime.UtcNow, Decription = "Выполнить как можно скорее", Title = "Важная", ExecutorId = 2 });
-                _context.SaveChanges();
             }
+
+            _context.SaveChanges();
 
             return Ok("Все ок сэр");
         }
