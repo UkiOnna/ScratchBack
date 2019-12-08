@@ -143,15 +143,15 @@ namespace ScratchBack.Controllers
         }
 
         [HttpGet("token/{id:guid}")]
-        public async Task<ActionResult<UserDto>> GetUserByToken(string token)
+        public IActionResult GetUserByToken(string token)
         {
-            if (_context.User.All(u => u.Token == token))
+            var user = _context.User.FirstOrDefault(u => u.Token == token);
+            if (user != null)
             {
-                User user = _context.User.FirstOrDefault(us => us.Token == token);
-                UserDto _user = new UserDto() { Id = user.Id, Token = user.Token, DepartmentId = user.DepartmentId, FirstName = user.FirstName, LastName = user.LastName, MiddleName = user.MiddleName, Password = user.Password, RoleId = user.RoleId, Username = user.Username };
-                return Ok(user);
+                UserDto userDto = new UserDto() { Id = user.Id, Token = user.Token, DepartmentId = user.DepartmentId, FirstName = user.FirstName, LastName = user.LastName, MiddleName = user.MiddleName, Password = user.Password, RoleId = user.RoleId, Username = user.Username };
+                return Ok(userDto);
             }
-            return Ok(null);
+            return BadRequest();
         }
 
         [HttpGet("fill")]
