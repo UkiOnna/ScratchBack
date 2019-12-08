@@ -142,10 +142,25 @@ namespace ScratchBack.Controllers
             return BadRequest();
         }
 
-        [HttpGet("token/{id:guid}")]
-        public IActionResult GetUserByToken(string token)
+        [HttpGet("sign-out/{id}")]
+        public IActionResult SignOut(int id)
         {
-            var user = _context.User.FirstOrDefault(u => u.Token == token);
+            var user = _context.User.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                user.Token = "";
+                _context.SaveChanges();
+
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost("token")]
+        public IActionResult GetUserByToken([FromBody]TokenDto userToken)
+        {
+            var user = _context.User.FirstOrDefault(u => u.Token == userToken.Token);
             if (user != null)
             {
                 UserDto userDto = new UserDto() { Id = user.Id, Token = user.Token, DepartmentId = user.DepartmentId, FirstName = user.FirstName, LastName = user.LastName, MiddleName = user.MiddleName, Password = user.Password, RoleId = user.RoleId, Username = user.Username };
