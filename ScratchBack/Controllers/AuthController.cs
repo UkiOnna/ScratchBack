@@ -20,13 +20,6 @@ namespace ScratchBack.Controllers
         public AuthController(ScratchContext context)
         {
             _context = context;
-            if (!_context.User.Any())
-            {
-                _context.User.Add(new User { FirstName = "root", MiddleName = "root", LastName = "root", DepartmentId = 1, RoleId = 4, Username = "root", Password = "root" });
-                _context.User.Add(new User { FirstName = "Игорь", MiddleName = "Иванович", LastName = "Тактаков", DepartmentId = 1, RoleId = 1, Username = "tak", Password = "tak" });
-                _context.User.Add(new User { FirstName = "Монет", MiddleName = "Монетович", LastName = "Монетов", DepartmentId = 2, RoleId = 2, Username = "monet", Password = "monet" });
-                _context.SaveChanges();
-            }
         }
 
         // GET: api/Auth
@@ -148,6 +141,54 @@ namespace ScratchBack.Controllers
                 return Ok(user);
             }
             return Ok(null);
+        }
+
+        [HttpGet("fill")]
+        public IActionResult FillDb()
+        {
+            if (!_context.Role.Any())
+            {
+                _context.Role.Add(new Role { Name = "Worker" });
+                _context.Role.Add(new Role { Name = "Department" });
+                _context.Role.Add(new Role { Name = "Subdivision" });
+                _context.Role.Add(new Role { Name = "Admin" });
+                _context.SaveChanges();
+            }
+
+            if (!_context.Subdivision.Any())
+            {
+                _context.Subdivision.Add(new Subdivision { Name = "FAFA" });
+                _context.SaveChanges();
+            }
+
+            if (!_context.Department.Any())
+            {
+                _context.Department.Add(new Department { Name = "Департамент #1", SubdivisionId = 1 });
+                _context.Department.Add(new Department { Name = "Департамент #2", SubdivisionId = 1 });
+                _context.SaveChanges();
+            }
+
+            if (!_context.Project.Any())
+            {
+                _context.Project.Add(new Project { DepartamentId = 1, Title = "Важный проект" });
+                _context.SaveChanges();
+            }
+
+            if (!_context.User.Any())
+            {
+                _context.User.Add(new User { FirstName = "root", MiddleName = "root", LastName = "root", DepartmentId = 1, RoleId = 4, Username = "root", Password = "root" });
+                _context.User.Add(new User { FirstName = "Игорь", MiddleName = "Иванович", LastName = "Тактаков", DepartmentId = 1, RoleId = 1, Username = "tak", Password = "tak" });
+                _context.User.Add(new User { FirstName = "Монет", MiddleName = "Монетович", LastName = "Монетов", DepartmentId = 2, RoleId = 2, Username = "monet", Password = "monet" });
+                _context.SaveChanges();
+            }
+
+            if (!_context.Task.Any())
+            {
+                _context.Task.Add(new Domain.Entities.Task { CreatorId = 1, ProjectId = 1, DeadLine = DateTime.UtcNow, Decription = "Выполнить как можно скорее", Title = "Важная", ExecutorId = 2 });
+                _context.SaveChanges();
+            }
+
+            return Ok("Все ок сэр");
         }
     }
 }
