@@ -109,43 +109,45 @@ namespace ScratchBack.Controllers
             return _context.Task.Any(e => e.Id == id);
         }
 
-        [HttpGet("{int:id}/{startDate}/{endDate}")]
-        public async Task<ActionResult<IEnumerable<TaskPersonStatisticDto>>> GetPersonStatisticDtos(
-            int userId, DateTime startDate, DateTime endDate)
+        [HttpGet("/personal-statistics/{id}/{startDate}/{endDate}")]
+        public IActionResult GetPersonStatisticDtos(int userId, DateTime startDate, DateTime endDate)
         {
             List<TaskPersonStatisticDto> taskDtos = new List<TaskPersonStatisticDto>();
-            var tasks = _context.Task.
-                Where(t => t.CreatedDate >= startDate
-               && t.CreatedDate <= endDate);
-            foreach(var task in tasks) {
-                if(task.ExecutorId == userId) {
-                    Interval interval = await _context.Interval.FirstOrDefaultAsync(i => i.TaskId == task.Id).ConfigureAwait(true);
+            var tasks = _context.Task.Where(t => t.CreatedDate >= startDate && t.CreatedDate <= endDate);
+            foreach (var task in tasks)
+            {
+                if (task.ExecutorId == userId)
+                {
+                    Interval interval = _context.Interval.FirstOrDefault(i => i.TaskId == task.Id);
                     int work_times = 0;
                     var all_work_times = (interval.EndDate - interval.StartDate).Hours;
                     if (interval.StartDate <= DateTime.Now &&
-                        interval.EndDate >= DateTime.Now) {
-                        if(all_work_times >= 24) {
+                        interval.EndDate >= DateTime.Now)
+                    {
+                        if (all_work_times >= 24)
+                        {
                             work_times = 24;
                         }
-                        else {
+                        else
+                        {
                             work_times = all_work_times;
                         }
                     }
-                    
-                        taskDtos.Add(
-                        new TaskPersonStatisticDto()
-                        {
-                            Id = task.Id,
-                            TaskName = task.Title,
-                            TaskStatus = "None",
-                            ProjectName = task.Project.Title,
-                            TodayWorkTime = work_times,
-                            AllWorkTime = all_work_times
-                        }
-                        );
+
+                    taskDtos.Add(
+                    new TaskPersonStatisticDto()
+                    {
+                        Id = task.Id,
+                        TaskName = task.Title,
+                        TaskStatus = "None",
+                        ProjectName = task.Project.Title,
+                        TodayWorkTime = work_times,
+                        AllWorkTime = all_work_times
+                    }
+                    );
                 }
             }
-            return taskDtos.ToArray();
+            return Ok(taskDtos);
         }
     }
 }

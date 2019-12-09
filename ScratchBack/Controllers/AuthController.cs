@@ -205,7 +205,7 @@ namespace ScratchBack.Controllers
 
             if (!_context.Task.Any())
             {
-                _context.Task.Add(new Domain.Entities.Task { CreatorId = 1, ProjectId = 1, DeadLine = DateTime.UtcNow, Decription = "Выполнить как можно скорее", Title = "Важная", ExecutorId = 2 });
+                _context.Task.Add(new Domain.Entities.Task { CreatorId = 1, ProjectId = 1, DeadLine = DateTime.UtcNow, Description = "Выполнить как можно скорее", Title = "Важная", ExecutorId = 2 });
             }
 
             _context.SaveChanges();
