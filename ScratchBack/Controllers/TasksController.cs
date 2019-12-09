@@ -79,12 +79,13 @@ namespace ScratchBack.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Domain.Entities.Task>> PostTask(Domain.Entities.Task task)
+        public IActionResult PostTask(TaskDto tempTask)
         {
+            Domain.Entities.Task task = new Domain.Entities.Task(tempTask);
             _context.Task.Add(task);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetTask", new { id = task.Id }, task);
+            return Ok();
         }
 
         // DELETE: api/Tasks/5
