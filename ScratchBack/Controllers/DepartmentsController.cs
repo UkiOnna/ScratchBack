@@ -85,13 +85,13 @@ namespace ScratchBack.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(DepartmentDto department)
+        public ActionResult PostDepartment(DepartmentDto department)
         {
-            Department _department = new Department() { Name = department.Name, SubdivisionId = department.SubdivisionId };
-            _context.Department.Add(_department);
-            await _context.SaveChangesAsync();
+            Department departmentDto = new Department() { Name = department.Name, SubdivisionId = department.SubdivisionId };
+            _context.Department.Add(departmentDto);
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetDepartment", new { id = _department.Id }, _department);
+            return Ok();
         }
 
         // DELETE: api/Departments/5
