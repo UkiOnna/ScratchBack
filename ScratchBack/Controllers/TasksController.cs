@@ -57,6 +57,20 @@ namespace ScratchBack.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("user-tasks/{id}/{date}")]
+        public ActionResult GetUserTasksByDate(int id, string date)
+        {
+            DateTime tempDate = DateTime.Parse(date);
+            var tasks = _context.Task.Where(t => t.ExecutorId == id && t.CreatedDate.Date == tempDate);
+
+            if (tasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tasks);
+        }
+
         // PUT: api/Tasks/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -123,14 +137,16 @@ namespace ScratchBack.Controllers
             return _context.Task.Any(e => e.Id == id);
         }
 
-        [HttpGet("/personal-statistics/{id}/{startDate}/{endDate}")]
-        public IActionResult GetPersonStatisticDtos(int userId, DateTime startDate, DateTime endDate)
+        [HttpGet("personal-statistics/{id}/{start}/{end}")]
+        public IActionResult GetPersonStatisticDtos(int id, string start, string end)
         {
             List<TaskPersonStatisticDto> taskDtos = new List<TaskPersonStatisticDto>();
-            var tasks = _context.Task.Where(t => t.CreatedDate >= startDate && t.CreatedDate <= endDate);
+            DateTime startDate = DateTime.Parse(start);
+            DateTime endDate = DateTime.Parse(end);
+            var tasks = _context.Task.Where(t => t.CreatedDate >= startDate.Date && t.CreatedDate <= endDate.Date);
             foreach (var task in tasks)
             {
-                if (task.ExecutorId == userId)
+                if (task.ExecutorId == id)
                 {
                     Interval interval = _context.Interval.FirstOrDefault(i => i.TaskId == task.Id);
                     int work_times = 0;
