@@ -42,6 +42,19 @@ namespace ScratchBack.Controllers
             return role;
         }
 
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<Role>> GetRoleByUserId(int id)
+        {
+            var user = _context.User.Find(id);
+            if (user.Role == null)
+            {
+                return NotFound();
+            }
+
+            return user.Role;
+        }
+
+
         // PUT: api/Roles/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
