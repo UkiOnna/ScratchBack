@@ -22,7 +22,7 @@ namespace Domain.Entities
             Id = task.Id;
             Title = task.Title;
             Description = task.Description;
-            DeadLine = DateTime.Parse(task.Deadline);
+            DeadLine = task.Deadline;
             CreatorId = task.CreatorId;
             ExecutorId = task.ExecutorId;
             ProjectId = task.ProjectId;

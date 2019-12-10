@@ -43,6 +43,20 @@ namespace ScratchBack.Controllers
             return task;
         }
 
+        [HttpGet("user-tasks/{id}")]
+        public ActionResult GetUserTasks(int id)
+        {
+
+            var tasks = _context.Task.Where(t => t.ExecutorId == id);
+
+            if (tasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tasks);
+        }
+
         // PUT: api/Tasks/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
