@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Data;
 using Domain.Entities;
+using Models.Dtos;
 
 namespace ScratchBack.Controllers
 {
@@ -78,12 +79,12 @@ namespace ScratchBack.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public ActionResult PostProject(ProjectDto project)
         {
-            _context.Project.Add(project);
-            await _context.SaveChangesAsync();
+            _context.Project.Add(new Project(project));
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetProject", new { id = project.Id }, project);
+            return Ok();
         }
 
         // DELETE: api/Projects/5
