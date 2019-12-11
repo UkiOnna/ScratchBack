@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Domain.Data;
 using Domain.Entities;
+using Models.Dtos;
 
 namespace ScratchBack.Controllers
 {
@@ -40,6 +41,30 @@ namespace ScratchBack.Controllers
             }
 
             return interval;
+        }
+
+        [HttpGet("user-intervals/{id}")]
+        public ActionResult GetUserIntervals(int id)
+        {
+            var user = _context.User.Find(id);
+            var tasks = _context.Task.Where(t => t.ExecutorId == id);
+            List<Interval> intervals = new List<Interval>();
+            foreach (var task in tasks.ToList())
+            {
+                if (_context.Interval.All(i => i.TaskId == task.Id))
+                {
+                    foreach (var interval in _context.Interval.Where(i => i.TaskId == task.Id))
+                    {
+                        intervals.Add(interval);
+                    }
+                }
+            }
+            if (intervals == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(intervals);
         }
 
         // PUT: api/Intervals/5
@@ -78,12 +103,13 @@ namespace ScratchBack.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Interval>> PostInterval(Interval interval)
+        public ActionResult PostInterval(IntervalDto intervalDto)
         {
+            Interval interval = new Interval(intervalDto);
             _context.Interval.Add(interval);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetInterval", new { id = interval.Id }, interval);
+            return Ok();
         }
 
         // DELETE: api/Intervals/5

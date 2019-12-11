@@ -20,7 +20,7 @@ namespace Domain.Entities
         {
             Id = project.Id;
             Title = project.Title;
-            DepartamentId = project.DepartmentId;
+            DepartamentId = project.DepartamentId;
         }
     }
 }
