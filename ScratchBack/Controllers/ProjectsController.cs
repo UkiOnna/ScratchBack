@@ -43,6 +43,34 @@ namespace ScratchBack.Controllers
             return project;
         }
 
+        [HttpGet("department/{id}")]
+        public ActionResult GetDepartmentProjects(int id)
+        {
+            var department = _context.Department.Find(id);
+            var projects = _context.Project.Where(p => p.DepartamentId == department.Id);
+
+            if (projects == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(projects);
+        }
+
+        [HttpGet("task/{id}")]
+        public ActionResult GetTaskProjects(int id)
+        {
+            var task = _context.Task.Find(id);
+            var projects = _context.Project.Where(p => p.Id == task.ProjectId);
+
+            if (projects == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(projects);
+        }
+
         // PUT: api/Projects/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.

@@ -8,6 +8,6 @@ namespace Models.Dtos
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public int DepartmentId { get; set; }
+        public int DepartamentId { get; set; }
     }
 }
