@@ -57,6 +57,20 @@ namespace ScratchBack.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("project/{id}")]
+        public ActionResult GetProjectTasks(int id)
+        {
+
+            var tasks = _context.Task.Where(t => t.ProjectId == id);
+
+            if (tasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tasks);
+        }
+
         [HttpGet("user-tasks/{id}/{date}")]
         public ActionResult GetUserTasksByDate(int id, string date)
         {
@@ -110,7 +124,11 @@ namespace ScratchBack.Controllers
         public IActionResult PostTask(TaskDto tempTask)
         {
             Domain.Entities.Task task = new Domain.Entities.Task(tempTask);
+
             _context.Task.Add(task);
+            _context.SaveChanges();
+            Interval interval = new Interval() { TaskId = _context.Task.ToList().Last().Id };
+            _context.Interval.Add(interval);
             _context.SaveChanges();
 
             return Ok();
@@ -150,7 +168,7 @@ namespace ScratchBack.Controllers
                 {
                     Interval interval = _context.Interval.FirstOrDefault(i => i.TaskId == task.Id);
                     int work_times = 0;
-                    var all_work_times = (interval.EndDate - interval.StartDate).Hours;
+                    var all_work_times = (interval.EndDate - interval.StartDate).Value.Hours;
                     if (interval.StartDate <= DateTime.Now &&
                         interval.EndDate >= DateTime.Now)
                     {
