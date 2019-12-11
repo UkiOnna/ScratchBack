@@ -162,11 +162,16 @@ namespace ScratchBack.Controllers
             DateTime startDate = DateTime.Parse(start);
             DateTime endDate = DateTime.Parse(end);
             var tasks = _context.Task.Where(t => t.CreatedDate >= startDate.Date && t.CreatedDate <= endDate.Date);
-            foreach (var task in tasks)
+            foreach (var task in tasks.ToList())
             {
                 if (task.ExecutorId == id)
                 {
-                    Interval interval = _context.Interval.FirstOrDefault(i => i.TaskId == task.Id);
+                    int taskId = task.Id;
+                    Interval interval = _context.Interval.FirstOrDefault(i => i.TaskId == taskId);
+                    if (interval.StartDate == null)
+                    {
+                        return Ok();
+                    }
                     int work_times = 0;
                     var all_work_times = (interval.EndDate - interval.StartDate).Value.Hours;
                     if (interval.StartDate <= DateTime.Now &&

@@ -51,7 +51,7 @@ namespace ScratchBack.Controllers
             List<Interval> intervals = new List<Interval>();
             foreach (var task in tasks.ToList())
             {
-                if (_context.Interval.All(i => i.TaskId == task.Id))
+                if (_context.Interval.Any(i => i.TaskId == task.Id))
                 {
                     foreach (var interval in _context.Interval.Where(i => i.TaskId == task.Id))
                     {
@@ -105,6 +105,8 @@ namespace ScratchBack.Controllers
         [HttpPost]
         public ActionResult PostInterval(IntervalDto intervalDto)
         {
+            intervalDto.StartDate=intervalDto.StartDate.Value.ToLocalTime();
+            intervalDto.EndDate = intervalDto.EndDate.Value.ToLocalTime();
             Interval interval = new Interval(intervalDto);
             _context.Interval.Add(interval);
             _context.SaveChanges();

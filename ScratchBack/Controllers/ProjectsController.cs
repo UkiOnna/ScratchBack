@@ -61,14 +61,14 @@ namespace ScratchBack.Controllers
         public ActionResult GetTaskProjects(int id)
         {
             var task = _context.Task.Find(id);
-            var projects = _context.Project.Where(p => p.Id == task.ProjectId);
+            var project = _context.Project.FirstOrDefault(p => p.Id == task.ProjectId);
 
-            if (projects == null)
+            if (project == null)
             {
                 return NotFound();
             }
 
-            return Ok(projects);
+            return Ok(project);
         }
 
         // PUT: api/Projects/5
